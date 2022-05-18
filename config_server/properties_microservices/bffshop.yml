@@ -1,0 +1,130 @@
+#API CONFIGS
+server:
+  port: 8765
+#EUREKA CONFIGS
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+#PROPERTIES KEYS
+token:
+  secret: segredo
+#SPRING CONFIGS
+spring:
+  application:
+    name: bffshop
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+      #       lower-case-service-id: true
+      #--------------------------------ROUTES---------------------------------------#
+      #--------------------------------CUSTOMER ROUTES------------------------------#
+      routes[0]:
+        id: users
+        uri: lb://customer
+        predicates[0]: Path=/v1/users
+        predicates[1]: Method=POST
+        filters[0]: RemoveRequestHeader=Cookie
+      routes[1]:
+        id: users-id
+        uri: lb://customer
+        predicates[0]: Path=/v1/users/*
+        predicates[1]: Method=PUT, GET
+        filters[0]: AuthorizationHeaderFilter
+      routes[2]:
+        id: users-login
+        uri: lb://customer
+        predicates[0]: Path=/v1/login
+        predicates[1]: Method=POST
+        filters[0]: RemoveRequestHeader=Cookie
+      #--------------------------------CATALOG ROUTES------------------------------#
+      #CATEGORIES------------------------#
+      routes[3]:
+        id: categories
+        uri: lb://catalog
+        predicates[0]: Path=/v1/categories
+        predicates[1]: Method=POST,GET
+        filters[0]: RemoveRequestHeader=Cookie
+      routes[4]:
+        id: categories/*
+        uri: lb://catalog
+        predicates[0]: Path=/v1/categories/{category_id}/products
+        predicates[1]: Method=GET
+        filters[0]: AuthorizationHeaderFilter
+      routes[5]:
+        id: categories/{id}
+        uri: lb://catalog
+        predicates[0]: Path=/v1/categories/{category_id}
+        predicates[1]: Method=PUT, DELETE
+        filters[0]: RemoveRequestHeader=Cookie
+      #PRODUCTS------------------------#
+      routes[6]:
+        id: products
+        uri: lb://catalog
+        predicates[0]: Path=/v1/products
+        predicates[1]: Method=POST, GET
+        filters[0]: RemoveRequestHeader=Cookie
+      routes[7]:
+        id: products
+        uri: lb://catalog
+        predicates[0]: Path=/v1/products/{product_id}
+        predicates[1]: Method=PUT, DELETE
+        filters[0]: RemoveRequestHeader=Cookie
+      routes[8]:
+        id: products/GET
+        uri: lb://catalog
+        predicates[0]: Path=/v1/products/{product_id}
+        predicates[1]: Method=GET
+        filters[0]: AuthorizationHeaderFilter
+      #VARIANTS------------------------#
+      routes[9]:
+        id: variations
+        uri: lb://catalog
+        predicates[0]: Path=/v1/variations
+        predicates[1]: Method=POST
+        filters[0]: RemoveRequestHeader=Cookie
+      routes[10]:
+        id: variations/{id}
+        uri: lb://catalog
+        predicates[0]: Path=/v1/variations/*
+        predicates[1]: Method=PUT, DELETE,GET
+        filters[0]: RemoveRequestHeader=Cookie
+
+      #--------------------------------CHECKOUT ROUTES------------------------------#
+      #PAYMENTS------------------------#
+      routes[11]:
+        id: payment
+        uri: lb://checkout
+        predicates[0]: Path=/v1/payments
+        predicates[1]: Method=GET
+        filters[0]: AuthorizationHeaderFilter
+      routes[12]:
+        id: payment/{id}
+        uri: lb://checkout
+        predicates[0]: Path=/v1/payments/{id}
+        predicates[1]: Method=PUT, DELETE, GET
+        filters[0]: RemoveRequestHeader=Cookie
+      routes[13]:
+        id: payment/{id}
+        uri: lb://checkout
+        predicates[0]: Path=/v1/payments
+        predicates[1]: Method=POST
+        filters[0]: RemoveRequestHeader=Cookie
+      #PURCHASES------------------------#
+      routes[14]:
+        id: purchases/{id}
+        uri: lb://checkout
+        predicates[0]: Path=/v1/purchases
+        predicates[1]: Method=POST
+        filters[0]: AuthorizationHeaderFilter
+      #PURCHASES------------------------#
+      routes[15]:
+        id: /historic/user/{id_user}
+        uri: lb://history
+        predicates[0]: Path=/v1/historic/user/{id_user}
+        predicates[1]: Method=GET
+        filters[0]: AuthorizationHeaderFilter
+
+
