@@ -1,0 +1,45 @@
+server:
+  port: ${PORT:0}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+spring:
+  application:
+    name: checkout
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    initialization-mode: always
+    url: jdbc:postgresql://localhost:5432/checkout
+    password: gremio83
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    format_sql: 'true'
+    show-sql: 'true'
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+  #RABBITMQ
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+
+cart:
+  rabbitmq:
+    exchange: cart.exchange
+    routingkey: purchase.cart.routingkey
+
+
+
+

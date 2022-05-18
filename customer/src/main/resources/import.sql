@@ -1,0 +1,1 @@
+INSERT INTO public.users (active,birthdate,cpf,email,first_name,last_name,"password",sex) VALUES (true,'1995-04-22','000.000.555-05','wesley@email.br','Wesley','Schwartz','$2a$10$FvBiZiX.nV4gh6koUQTVcO5MuN6taLu0rbvoGdYcjtumht0VZFkAm','Masculino');
