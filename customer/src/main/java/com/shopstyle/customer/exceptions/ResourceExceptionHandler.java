@@ -17,14 +17,13 @@ import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+   @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardError> methodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
         StandardError error = new StandardError(LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
-                //ex.getBindingResult().getFieldError().getField() + " " + ex.getBindingResult().getFieldError().getDefaultMessage(),
-                ex.getFieldError().getField() + " " + ex.getFieldError().getDefaultMessage(),
+               //ex.getFieldError().getField() + " " + ex.getFieldError().getDefaultMessage(),
+                ex.getMessage(),
                 request.getRequestURI());
-
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 

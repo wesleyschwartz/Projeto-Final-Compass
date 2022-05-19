@@ -1,4 +1,4 @@
-package com.shopstyle.customer.DTO;
+package com.shopstyle.customer.model.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
