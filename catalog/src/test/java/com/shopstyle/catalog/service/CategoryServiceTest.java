@@ -69,8 +69,12 @@ class CategoryServiceTest {
 
     @Test
     void findAll() {
+        when(categoryRepository.findAll()).thenReturn(categoryList);
 
+        List<CategoryDTO> all = categoryService.findAll();
 
+        assertEquals(all.size(), categoryList.size());
+        assertEquals(all.get(0).getName(), categoryList.get(0).getName());
     }
 
     @Test
