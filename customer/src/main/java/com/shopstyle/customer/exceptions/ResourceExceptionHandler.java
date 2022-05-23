@@ -11,19 +11,26 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 
 @ControllerAdvice
+
+
 public class ResourceExceptionHandler {
-   @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardError> methodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        StandardError error = new StandardError(LocalDateTime.now(),
+        StandardError error = new StandardError(
                 HttpStatus.BAD_REQUEST.value(),
-               //ex.getFieldError().getField() + " " + ex.getFieldError().getDefaultMessage(),
-                ex.getMessage(),
-                request.getRequestURI());
+                ex.getFieldError().getField() + " " + ex.getFieldError().getDefaultMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<StandardError> methodArgumentNotValidException(RuntimeException ex, HttpServletRequest request) {
+        StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage());
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
@@ -38,11 +45,10 @@ public class ResourceExceptionHandler {
         } else if (campo.equals("birthdate")) {
             msg = "Format valid: dd/MM/yyyy";
         }
-        StandardError error = new StandardError(LocalDateTime.now(),
+        StandardError error = new StandardError(
                 HttpStatus.BAD_REQUEST.value(),
-                "camp: " + campo + " invalid. " + msg,
-                request.getRequestURI());
-
+                "camp: " + campo + " invalid. " + msg
+        );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
@@ -56,20 +62,17 @@ public class ResourceExceptionHandler {
                 exceptionCause = new RuntimeException(detail);
             }
         }
-        StandardError error = new StandardError(LocalDateTime.now(),
+        StandardError error = new StandardError(
                 HttpStatus.BAD_REQUEST.value(),
-                exceptionCause.getMessage(),
-                request.getRequestURI());
+                exceptionCause.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<StandardError> methodArgumentNotValidException(NoSuchElementException ex, HttpServletRequest request) {
-
-        StandardError error = new StandardError(LocalDateTime.now(),
+        StandardError error = new StandardError(
                 HttpStatus.BAD_REQUEST.value(),
-                ex.getMessage(),
-                request.getRequestURI());
+                ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 

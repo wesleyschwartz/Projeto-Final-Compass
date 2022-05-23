@@ -1,109 +1,112 @@
 package com.shopstyle.customer.controller;
 
-import com.shopstyle.customer.config.security.TokenService;
-import com.shopstyle.customer.model.DTO.UserDTO;
-import com.shopstyle.customer.model.Sex;
-import com.shopstyle.customer.model.User;
-import com.shopstyle.customer.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDate;
-import java.util.Optional;
+import java.net.URI;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
 class UserControllerTest {
-    public static final LocalDate BIRTHDATE = LocalDate.of(1995, 4, 22);
-    public static final long ID = 1l;
-    public static final String FIRST_NAME = "Wesley";
-    public static final String LAST_NAME = "Schwartz";
-    public static final Sex SEX = Sex.Masculino;
-    public static final String CPF = "816.372.334-34";
-    public static final String EMAIL = "wesley@email.com";
-    public static final String PASSWORD = "12345678";
-    public static final boolean ACTIVE = true;
 
-    private User user;
-    private UserDTO userDTO;
-    private Optional<User> optionalUser;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @InjectMocks
-    private UserController userController;
-    @Mock
-    private UserService userService;
-    @Mock
-    private AuthenticationManager authenticationManager;
-    @Mock
-    private TokenService tokenService;
-    @Mock
-    private ModelMapper modelMapper;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        startUser();
-    }
-
-    @Test
-    void create() {
-    }
-
-    @Test
-    void login() {
-    }
-
-    @Test
-    void getByIdThenReturnSuccess() {
-        when(userService.findById(anyLong())).thenReturn(user);
-        when(modelMapper.map(any(), any())).thenReturn(userDTO);
-
-        ResponseEntity<UserDTO> response =
-                userController.getById(ID);
-
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(ResponseEntity.class, response.getClass());
-        assertEquals(UserDTO.class, response.getBody().getClass());
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        assertEquals(ID, response.getBody().getId());
-        assertEquals(FIRST_NAME, response.getBody().getFirstName());
-        assertEquals(LAST_NAME, response.getBody().getLastName());
-        assertEquals(SEX, response.getBody().getSex());
-        assertEquals(CPF, response.getBody().getCpf());
-        assertEquals(BIRTHDATE, response.getBody().getBirthdate());
-        assertEquals(EMAIL, response.getBody().getEmail());
-        assertEquals(PASSWORD, response.getBody().getPassword());
-        assertEquals(ACTIVE, response.getBody().getActive());
 
     }
 
     @Test
-    void update() {
+    void createWithSuccess() throws Exception {
+        RequestBuilder requestBuilder = post("/v1/users")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"firstName\":\"Wesley\"," +
+                        "\"lastName\": \"Schwartz\"," +
+                        "\"sex\": \"Masculino\"," +
+                        "\"cpf\": \"000.000.555-05\"," +
+                        "\"birthdate\": \"22/04/1995\"," +
+                        "\"email\": \"wesley1@email.com.br\"," +
+                        "\"password\": \"12345678\"," +
+                        "\"active\": true }")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+
+    }
+    @Test
+    void loginWithInsucces() throws Exception {
+        URI uri = (new URI("/v1/login"));
+        String json = "{\"email\": \"invalid@email.com\", \"password\": \"12345678\"}";
+        mockMvc.perform(post(uri)
+                        .content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(400));
     }
 
-    private void startUser() {
-        user = new User(ID, FIRST_NAME, LAST_NAME, SEX, CPF,
-                BIRTHDATE, EMAIL, PASSWORD, ACTIVE);
-
-        userDTO = new UserDTO(ID, FIRST_NAME, LAST_NAME, SEX, CPF,
-                BIRTHDATE, EMAIL, PASSWORD, ACTIVE);
-
-        optionalUser = optionalUser.of(new User(ID, FIRST_NAME, LAST_NAME, SEX, CPF,
-                BIRTHDATE, EMAIL, PASSWORD, ACTIVE));
+    @Test
+    void loginSucces() throws Exception {
+        URI uri = (new URI("/v1/login"));
+        String json = "{\"email\": \"wesley@email.com.br\", \"password\": \"12345678\"}";
+        mockMvc.perform(post(uri)
+                        .content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
+
+
+    @Test
+    void getByIdThenReturnSuccess() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/v1/users/1");
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
+
+    @Test
+    void updateWithSuccess() throws Exception {
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/v1/users/1")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"firstName\":\"Wesley2\"," +
+                        "\"lastName\": \"Schwartz\"," +
+                        "\"sex\": \"Masculino\"," +
+                        "\"cpf\": \"000.000.555-05\"," +
+                        "\"birthdate\": \"22/04/1995\"," +
+                        "\"email\": \"wesley@email.com.br\"," +
+                        "\"password\": \"12345678\"," +
+                        "\"active\": true }")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        System.out.println(response);
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
+
 
 
 }

@@ -1,4 +1,4 @@
-package com.shopstyle.customer.exceptions;
+/*package com.shopstyle.customer.exceptions;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,10 +22,10 @@ class ResourceExceptionHandlerTest {
 
     }
 
-
+/*
     @Test
     void methodArgumentNotValidExceptionWhenFirstIsNull() {
-   /*     ResponseEntity<StandardError> response = exceptionHandler
+       ResponseEntity<StandardError> response = exceptionHandler
                 .methodArgumentNotValidException
                         (new MethodArgumentNotValidException("firstName cannot be null"),
                                 new MockHttpServletRequest());
@@ -40,7 +40,7 @@ class ResourceExceptionHandlerTest {
         assertEquals(404, response.getBody().getStatus());
 
         assertNotEquals("/user/2", response.getBody().getPath());
-        assertNotEquals(LocalDateTime.now(), response.getBody().getTimestamp());*/
+        assertNotEquals(LocalDateTime.now(), response.getBody().getTimestamp());
     }
 
     @Test
@@ -56,3 +56,4 @@ class ResourceExceptionHandlerTest {
     }
 }
 
+*/

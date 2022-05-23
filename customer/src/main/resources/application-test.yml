@@ -1,25 +1,16 @@
 server:
-  port: ${PORT:0}
-
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-  instance:
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  port: 8081
 
 spring:
   application:
-    name: customer
+    name: customer-test
   profiles:
-    - default
+    - test
   datasource:
     driver-class-name: org.postgresql.Driver
     username: postgres
     initialization-mode: always
-    url: jdbc:postgresql://localhost:5432/customer
+    url: jdbc:postgresql://localhost:5432/customerTest
     password: gremio83
 
   jpa:

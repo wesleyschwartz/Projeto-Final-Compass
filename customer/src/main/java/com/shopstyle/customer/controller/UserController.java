@@ -31,11 +31,12 @@ public class UserController {
 
     @PostMapping("/users")
     public ResponseEntity<UserDTO> create(@RequestBody @Valid UserDTO userDTO) {
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}").buildAndExpand(userService.create(userDTO).getId()).toUri();
-        return ResponseEntity.created(uri).build();
+            URI uri = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}").buildAndExpand(userService.create(userDTO).getId()).toUri();
+            return ResponseEntity.created(uri).build();
     }
+
     @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody @Valid UserLogin userLogin) {
         UsernamePasswordAuthenticationToken login = userLogin.convert();
@@ -43,7 +44,7 @@ public class UserController {
             Authentication authentication = authenticationManager.authenticate(login);
             String token = tokenService.generateToken(authentication);
             return ResponseEntity.ok(new TokenDTO(token, "Bearer "));
-        }catch (AuthenticationException e){
+        } catch (AuthenticationException e) {
             return ResponseEntity.badRequest().build();
         }
 

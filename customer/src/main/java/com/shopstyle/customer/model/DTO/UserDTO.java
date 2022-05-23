@@ -23,11 +23,10 @@ public class UserDTO {
     private String firstName;
 
     @NotNull(message = "lastName cannot be null")
-    @Size(min = 3)
+    @Size(min = 3, message = "lastName must contain at least 3 characters")
     private String lastName;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "lastName can not null")
     private Sex sex;
 
     @NotNull
@@ -37,15 +36,14 @@ public class UserDTO {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate birthdate;
 
-    @Email
-    @NotNull
-    @NotBlank
+    @Email(message= "email must be a well-formed email address")
+    @NotNull(message = "email can not be null")
     private String email;
 
-    @NotNull
-    @Size(min = 8)
+    @NotNull(message = "password can not be null")
+    @Size(min = 8, message =  "password must contain at least 8 characters")
     private String password;
 
-    @NotNull
+    @NotNull(message = "active can not be null")
     private Boolean active;
 }
