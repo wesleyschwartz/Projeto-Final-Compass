@@ -7,7 +7,6 @@ import com.shopstyle.catalog.repository.CategoryRepository;
 import com.shopstyle.catalog.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -21,8 +20,6 @@ public class ProductService {
     ProductRepository productRepository;
     @Autowired
     CategoryRepository categoryRepository;
-    @Autowired
-    MongoOperations mongoOperations;
     @Autowired
     SequenceGeneration sequence;
     @Autowired

@@ -49,7 +49,6 @@ class CategoryServiceTest {
         category.setName("CategoryTest");
         category.setActive(true);
 
-
     }
 
     @Test

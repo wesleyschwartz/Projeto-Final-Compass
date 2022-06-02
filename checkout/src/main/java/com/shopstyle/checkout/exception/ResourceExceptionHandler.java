@@ -2,28 +2,30 @@ package com.shopstyle.checkout.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 
 @ControllerAdvice
-public class ResourceExceptionHandler {
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<StandardError> httpMessageNotReadableException(RuntimeException ex, HttpServletRequest request) {
-        String msg = ex.getMessage();
-        if (ex.getMessage().contains("[CatalogFeignClient#findVariantById(long)]:")) {
-            msg = "variant_id not found";
-        }
 
-        StandardError error = new StandardError(LocalDateTime.now(),
+public class ResourceExceptionHandler {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<StandardError> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        StandardError error = new StandardError(
                 HttpStatus.BAD_REQUEST.value(),
-                msg,
-                request.getRequestURI());
+                ex.getFieldError().getField() + " " + ex.getFieldError().getDefaultMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<StandardError> noSuchElementException(NoSuchElementException ex) {
+        StandardError error = new StandardError(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
 }

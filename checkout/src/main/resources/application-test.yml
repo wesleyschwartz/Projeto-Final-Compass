@@ -10,12 +10,15 @@ eureka:
 
 spring:
   application:
-    name: checkout
+    name: checkout-test
+  profiles:
+    - test
   datasource:
     driver-class-name: org.postgresql.Driver
     username: postgres
-    url: jdbc:postgresql://localhost:5432/checkout
+    url: jdbc:postgresql://localhost:5432/checkout-test
     password: gremio83
+    initialization-mode: always
   jpa:
     properties:
       hibernate:
@@ -23,7 +26,7 @@ spring:
     format_sql: 'true'
     show-sql: 'true'
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy

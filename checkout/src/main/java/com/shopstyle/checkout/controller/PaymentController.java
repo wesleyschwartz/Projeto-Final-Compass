@@ -30,6 +30,7 @@ public class PaymentController {
 
     @PutMapping("/{id}")
     ResponseEntity<Payment> update(@PathVariable long id, @RequestBody @Valid PaymentDTO paymentDTO) {
+        paymentDTO.setPayment_id(id);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}").buildAndExpand(service.update(paymentDTO).getPayment_id()).toUri();
@@ -43,12 +44,12 @@ public class PaymentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PaymentDTO>> findAllWithoutProducts() {
+    public ResponseEntity<List<PaymentDTO>> findAll() {
         return ResponseEntity.ok().body(service.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentDTO> findByIdWithProducts(@PathVariable long id) {
+    public ResponseEntity<PaymentDTO> findById(@PathVariable long id) {
         return ResponseEntity.ok().body(service.findById(id));
     }
 

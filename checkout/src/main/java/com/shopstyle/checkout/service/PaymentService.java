@@ -20,15 +20,18 @@ public class PaymentService {
     }
 
     public PaymentDTO findById(long id) {
-        return new ModelMapper().map(paymentRepository.findById(id).get(), PaymentDTO.class);
+        Payment payment = paymentRepository.findById(id).get();
+        return new ModelMapper().map(payment, PaymentDTO.class);
     }
 
     public Payment update(PaymentDTO paymentDTO) {
+        findById(paymentDTO.getPayment_id());
         Payment save = new ModelMapper().map(paymentDTO, Payment.class);
         return paymentRepository.save(save);
     }
 
     public void deleteById(long id) {
+        findById(id);
         paymentRepository.deleteById(id);
     }
 
